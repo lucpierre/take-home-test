@@ -2,6 +2,7 @@ import './App.css'
 import { useState } from 'react'
 
 const API_URL = 'http://localhost:3001'
+const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/
 
 function App() {
     const [url, setUrl] = useState('')
@@ -13,6 +14,13 @@ function App() {
         // Réinitialiser l'erreur précédente
         setError(null)
         setIsLoading(true)
+
+        if (!urlRegex.test(url)) {
+            setError("L'URL n'est pas valide. Veuillez entrer une URL valide")
+            setShortenedUrl('')
+            setIsLoading(false)
+            return
+        }
 
         try {
             const data = await fetch(`${API_URL}/add`, {
@@ -60,7 +68,7 @@ function App() {
                         placeholder="Enter your URL"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
-                        pattern="https?://.+"
+                        pattern={`${urlRegex}`}
                     />
                 </p>
 
