@@ -1,6 +1,6 @@
-import { Express, NextFunction, Request, Response } from 'express'
-import { nanoid } from 'nanoid'
+import { Express } from 'express'
 import { ErrorTypes, routeWrapper } from './middleware/error.handler'
+import { getCode } from './helper/codes.helper'
 
 export const makeRoutes = (app: Express, urlDatabase: Map<string, string>) => {
     /**
@@ -12,7 +12,7 @@ export const makeRoutes = (app: Express, urlDatabase: Map<string, string>) => {
     app.post(
         '/add',
         routeWrapper((req, res) => {
-            const urlCode = nanoid(10)
+            const urlCode = getCode()
 
             const isAlreadyKnown = urlDatabase.has(urlCode)
 

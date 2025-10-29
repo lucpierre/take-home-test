@@ -38,3 +38,6 @@ platane-internal/
 
 # Webstorm
 .idea
+
+# Jest
+server/coverage/
