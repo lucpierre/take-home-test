@@ -35,3 +35,6 @@ next-env.d.ts
 
 # internal documentation (for Platane team only)
 platane-internal/
+
+# Webstorm
+.idea

@@ -1,0 +1,22 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "prettier/prettier": "warn",
+    "no-console": "warn",
+    "func-names": "off",
+    "no-process-exit": "error",
+    "object-shorthand": "off",
+    "@typescript-eslint/no-explicit-any": "error", // disallow "any" type
+    "no-unused-vars": "off"
+  }
+}
