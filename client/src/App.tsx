@@ -6,19 +6,42 @@ const API_URL = 'http://localhost:3001'
 function App() {
     const [url, setUrl] = useState('')
     const [shortenedUrl, setShortenedUrl] = useState('')
+    const [error, setError] = useState<string | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
 
     const submit = async () => {
-        const data = await fetch(`${API_URL}/add`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url }),
-        })
+        // Réinitialiser l'erreur précédente
+        setError(null)
+        setIsLoading(true)
 
-        const response = await data.json()
+        try {
+            const data = await fetch(`${API_URL}/add`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url }),
+            })
 
-        setShortenedUrl(response.content.code)
+            const response = await data.json()
+
+            // If the response is not ok or not successful
+            if (!data.ok || !response.status || response.status !== 'ok') {
+                setError(response.message || 'Une erreur est survenue')
+                setShortenedUrl('')
+                return
+            }
+
+            // Succès
+            console.log({ response })
+            setShortenedUrl(response.content.code)
+        } catch (err) {
+            // Network or fetch error
+            setError('Erreur de connexion au serveur')
+            setShortenedUrl('')
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const redirect = async () => {
@@ -37,14 +60,26 @@ function App() {
                         placeholder="Enter your URL"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
+                        pattern="https?://.+"
                     />
                 </p>
+
+                {/* Affichage des erreurs */}
+                {error && <p style={{ color: 'red' }}>⚠️ {error}</p>}
+
                 {shortenedUrl && (
                     <p>
-                        Shortened URL: <span onClick={() => redirect()}>{`${API_URL}/${shortenedUrl}`}</span>
+                        Shortened URL:{' '}
+                        <span
+                            onClick={() => redirect()}
+                            style={{ cursor: 'pointer', color: 'blue' }}
+                        >{`${API_URL}/${shortenedUrl}`}</span>
                     </p>
                 )}
-                <button onClick={submit}>Shorten</button>
+
+                <button onClick={submit} disabled={isLoading || !url.trim()}>
+                    {isLoading ? 'Chargement...' : 'Shorten'}
+                </button>
             </div>
         </div>
     )
